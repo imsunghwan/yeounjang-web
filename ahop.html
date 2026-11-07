@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>아홉의 그림판</title>
+<meta name="robots" content="noindex">
+<style>
+  :root { --paper: #f7f2e6; --ink: #3b3530; --muted: #8a7f70; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #e9e1cf; color: var(--ink); min-height: 100vh;
+         font-family: "Apple SD Gothic Neo", "Noto Sans KR", sans-serif; }
+  main { max-width: 640px; margin: 0 auto; padding: 32px 16px 48px; text-align: center; }
+  h1 { font-size: 26px; margin: 0 0 6px; letter-spacing: .1em; }
+  .lead { color: var(--muted); margin: 0 0 20px; font-size: 15px; }
+  .board { position: relative; width: 100%; aspect-ratio: 4 / 3; border-radius: 18px; overflow: hidden;
+           box-shadow: 0 4px 18px rgba(0,0,0,.18); background: var(--paper); }
+  .board svg, .board canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  canvas { touch-action: none; cursor: crosshair; }
+  .tip { margin-top: 14px; font-size: 14px; color: var(--muted); }
+  button { margin-top: 14px; font: inherit; font-size: 14px; padding: 8px 16px; border-radius: 999px;
+           border: 1px solid #b9ad97; background: #fffaf0; color: var(--ink); cursor: pointer; }
+</style>
+</head>
+<body>
+<main>
+  <h1>🖍️ 아홉의 그림판</h1>
+  <p class="lead">"다락방 벽에 있던 거. 다 칠해 버렸어. 긁으면 보여. 헤헤."</p>
+
+  <div class="board" id="board">
+    <!-- the drawing underneath -->
+    <svg viewBox="0 0 400 300" aria-label="크레파스 그림">
+      <rect width="400" height="300" fill="#f7f2e6"/>
+      <!-- the house with seven windows -->
+      <path d="M40 150 L120 90 L200 150 Z" fill="none" stroke="#c0603a" stroke-width="5" stroke-linejoin="round"/>
+      <rect x="55" y="150" width="130" height="95" fill="none" stroke="#8a5a3a" stroke-width="5"/>
+      <g fill="none" stroke="#3f7fa6" stroke-width="3">
+        <rect x="65" y="160" width="18" height="18"/><rect x="92" y="160" width="18" height="18"/>
+        <rect x="119" y="160" width="18" height="18"/><rect x="146" y="160" width="18" height="18"/>
+        <rect x="65" y="190" width="18" height="18"/><rect x="92" y="190" width="18" height="18"/>
+      </g>
+      <rect x="119" y="190" width="18" height="18" fill="#2b2b2b"/>
+      <text x="128" y="223" font-size="14" text-anchor="middle" fill="#c0392b" font-weight="700">7</text>
+      <!-- the clock -->
+      <circle cx="300" cy="80" r="40" fill="none" stroke="#6b4b2a" stroke-width="5"/>
+      <line x1="300" y1="80" x2="300" y2="50" stroke="#2b2b2b" stroke-width="4"/>
+      <line x1="300" y1="80" x2="324" y2="80" stroke="#2b2b2b" stroke-width="5"/>
+      <text x="300" y="140" font-size="15" text-anchor="middle" fill="#6b4b2a">시계는 거짓말쟁이</text>
+      <!-- a girl and rain -->
+      <circle cx="250" cy="190" r="14" fill="none" stroke="#d26a8f" stroke-width="4"/>
+      <path d="M250 204 L250 240 M250 215 L234 228 M250 215 L266 228 M250 240 L238 262 M250 240 L262 262"
+            stroke="#d26a8f" stroke-width="4" stroke-linecap="round"/>
+      <g stroke="#7fa6c9" stroke-width="3" stroke-linecap="round">
+        <line x1="215" y1="150" x2="209" y2="164"/><line x1="285" y1="150" x2="279" y2="164"/>
+        <line x1="230" y1="125" x2="224" y2="139"/><line x1="270" y1="120" x2="264" y2="134"/>
+      </g>
+      <!-- the message -->
+      <text x="200" y="276" font-size="22" text-anchor="middle" fill="#3b3530" font-weight="700">내 이름은 ■희야</text>
+      <text x="200" y="296" font-size="13" text-anchor="middle" fill="#8a7f70">첫 글자는 할머니가 알아</text>
+    </svg>
+    <canvas id="crayon" aria-label="긁어서 지우는 크레파스 덧칠"></canvas>
+  </div>
+
+  <p class="tip">손가락이나 마우스로 그림을 문질러 보세요.</p>
+  <button id="again" type="button">다시 칠하기</button>
+</main>
+<script>
+(() => {
+  const board = document.getElementById('board');
+  const canvas = document.getElementById('crayon');
+  const ctx = canvas.getContext('2d');
+  let drawing = false;
+
+  function seeded(seed) {           // same scribble every time
+    return () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  }
+
+  function cover() {
+    const r = board.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = Math.round(r.width * dpr);
+    canvas.height = Math.round(r.height * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.fillStyle = '#2d2a33';
+    ctx.fillRect(0, 0, r.width, r.height);
+    const rnd = seeded(9);
+    const colors = ['#3d3946', '#24212a', '#4a3f52', '#1f2b36'];
+    ctx.lineCap = 'round';
+    for (let i = 0; i < 260; i++) {  // crayon strokes on top so it looks scribbled over
+      ctx.strokeStyle = colors[i % colors.length];
+      ctx.lineWidth = 6 + rnd() * 10;
+      ctx.beginPath();
+      const x = rnd() * r.width, y = rnd() * r.height;
+      ctx.moveTo(x, y);
+      ctx.lineTo(x + (rnd() - .5) * 160, y + (rnd() - .5) * 60);
+      ctx.stroke();
+    }
+    ctx.fillStyle = 'rgba(255,255,255,.55)';
+    ctx.font = '600 18px "Apple SD Gothic Neo", sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('여기 문질러 봐', r.width / 2, r.height / 2);
+  }
+
+  let last = null;
+  function scratch(e) {
+    const r = canvas.getBoundingClientRect();
+    const x = e.clientX - r.left, y = e.clientY - r.top;
+    const radius = Math.max(16, r.width / 22);
+    ctx.globalCompositeOperation = 'destination-out';
+    // join to the previous point so a fast swipe clears a continuous path, not dots
+    ctx.lineCap = 'round';
+    ctx.lineWidth = radius * 2;
+    ctx.beginPath();
+    ctx.moveTo(last ? last.x : x, last ? last.y : y);
+    ctx.lineTo(x, y);
+    ctx.stroke();
+    last = { x, y };
+  }
+
+  canvas.addEventListener('pointerdown', e => { drawing = true; last = null; canvas.setPointerCapture(e.pointerId); scratch(e); });
+  canvas.addEventListener('pointermove', e => { if (drawing) scratch(e); });
+  ['pointerup', 'pointercancel', 'pointerleave'].forEach(t => canvas.addEventListener(t, () => { drawing = false; last = null; }));
+  document.getElementById('again').addEventListener('click', cover);
+  // phones resize when the address bar hides; only repaint when the width really changes
+  let lastWidth = 0;
+  window.addEventListener('resize', () => {
+    const w = board.getBoundingClientRect().width;
+    if (Math.abs(w - lastWidth) > 40) { lastWidth = w; cover(); }
+  });
+  lastWidth = board.getBoundingClientRect().width;
+  cover();
+})();
+</script>
+</body>
+</html>

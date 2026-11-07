@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>하곤 박제 공방</title>
+<meta name="robots" content="noindex">
+<!--
+  손님 명부 (비 오는 날에만 손님을 받습니다)
+  1978. 3. 11  박○○   비
+  1978. 6.  2  최○○   비
+  1978. 8. 19  정○○   비
+  1978. 10. 5  한○○   비
+  1978. 12. ?  ○희     비   — 마지막 손님. 가장 아름다운 순간.
+
+  안내문은 손님께만 보입니다. 화면을 천천히, 손으로 훑어보세요.
+-->
+<style>
+  :root { --bg: #15110e; --panel: #1f1914; --ink: #e9dfcc; --muted: #a8977c; --gold: #c9a45c; --line: #3a2f25; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+         font-family: "AppleMyungjo", "Nanum Myeongjo", "Batang", "Noto Serif KR", serif; line-height: 1.75; }
+  main { max-width: 860px; margin: 0 auto; padding: 48px 16px 64px; }
+  header { text-align: center; border-bottom: 1px solid var(--line); padding-bottom: 28px; }
+  .crest { width: 72px; height: 72px; margin: 0 auto 12px; opacity: .9; }
+  h1 { font-size: clamp(28px, 6vw, 42px); letter-spacing: .25em; margin: 0; font-weight: 400; }
+  .tagline { color: var(--gold); letter-spacing: .3em; font-size: 14px; margin-top: 8px; }
+  .intro { margin: 36px auto; max-width: 620px; text-align: center; color: var(--ink); }
+  .intro p { margin: 0 0 14px; }
+  .hours { display: inline-block; border: 1px solid var(--line); padding: 8px 18px; color: var(--muted); font-size: 14px; }
+  h2 { font-weight: 400; letter-spacing: .2em; text-align: center; color: var(--gold); margin: 48px 0 8px; font-size: 18px; }
+  .sub { text-align: center; color: var(--muted); font-size: 14px; margin: 0 0 24px; }
+  .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; }
+  .card { background: var(--panel); border: 1px solid var(--line); padding: 18px 12px 14px; text-align: center; }
+  .card svg { width: 100%; max-width: 120px; height: 90px; }
+  .card .name { font-size: 18px; margin-top: 6px; }
+  .card .time { color: var(--muted); font-size: 13px; letter-spacing: .1em; }
+  .card .time b { color: var(--gold); font-weight: 400; }
+  /* 손님께만 보이는 안내: 배경과 같은 색. 드래그(길게 눌러 선택)하면 보인다 */
+  .secret { color: var(--bg); text-align: center; margin: 40px 0 0; font-size: 16px; user-select: text; }
+  ::selection { background: #7a1f1f; color: #ffe9c9; }
+  .note { text-align: center; color: var(--muted); font-size: 13px; margin-top: 8px; }
+  footer { margin-top: 56px; border-top: 1px solid var(--line); padding-top: 20px; text-align: center; color: var(--muted); font-size: 13px; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <svg class="crest" viewBox="0 0 72 72" aria-hidden="true">
+      <circle cx="36" cy="36" r="33" fill="none" stroke="#c9a45c" stroke-width="1.5"/>
+      <path d="M20 44c8-2 12-10 20-12 6-1 10 1 12 4-4 0-6 2-8 5-4 6-14 7-24 3z" fill="#c9a45c"/>
+      <circle cx="46" cy="33" r="1.6" fill="#15110e"/>
+      <path d="M52 36l6 2-6 1z" fill="#c9a45c"/>
+    </svg>
+    <h1>하곤 박제 공방</h1>
+    <div class="tagline">멈춘 것들의 아름다움</div>
+  </header>
+
+  <section class="intro">
+    <p>박제는 죽음을 다루는 일이 아닙니다. 시간을 멈추는 일이지요.</p>
+    <p>가장 아름다운 순간에서, 더는 아무것도 변하지 않도록.</p>
+    <p>소중한 순간을 맡겨 주십시오. 오래, 아주 오래 머무르게 해 드리겠습니다.</p>
+    <span class="hours">영업시간 · 새벽 세 시 · 비 오는 날만</span>
+  </section>
+
+  <h2>진열장</h2>
+  <p class="sub">손님들께서 맡기신 순간들. 이름표에는 그 순간이 멈춘 시각을 적어 두었습니다.</p>
+
+  <section class="gallery">
+    <div class="card">
+      <svg viewBox="0 0 120 90" aria-hidden="true"><path d="M18 60c14-4 22-20 40-22 12-1 20 3 24 9-8 0-12 4-16 9-8 10-28 11-48 4z" fill="#8b7a5e"/><circle cx="74" cy="44" r="2.5" fill="#15110e"/><path d="M86 48l12 3-12 2z" fill="#c9a45c"/></svg>
+      <div class="name">곤줄박이</div><div class="time">멈춘 시각 <b>01:20</b></div>
+    </div>
+    <div class="card">
+      <svg viewBox="0 0 120 90" aria-hidden="true"><path d="M16 58c16-6 24-22 42-22 12 0 18 4 22 10-8 1-12 4-16 10-8 9-30 9-48 2z" fill="#6f8a4f"/><circle cx="72" cy="44" r="5" fill="none" stroke="#e9dfcc" stroke-width="2"/><circle cx="72" cy="44" r="2" fill="#15110e"/><path d="M84 47l12 2-12 3z" fill="#2b2b2b"/></svg>
+      <div class="name">동박새</div><div class="time">멈춘 시각 <b>03:00</b></div>
+    </div>
+    <div class="card">
+      <svg viewBox="0 0 120 90" aria-hidden="true"><path d="M20 56c14-8 22-18 38-18 10 0 16 4 20 9-6 1-10 4-14 9-8 8-26 8-44 0z" fill="#3f7fa6"/><circle cx="70" cy="44" r="2.5" fill="#15110e"/><path d="M80 46l26 4-26 3z" fill="#2b2b2b"/></svg>
+      <div class="name">물총새</div><div class="time">멈춘 시각 <b>04:45</b></div>
+    </div>
+    <div class="card">
+      <svg viewBox="0 0 120 90" aria-hidden="true"><path d="M18 58c14-6 22-20 40-21 12 0 18 4 22 10-8 0-12 4-16 9-8 9-28 10-46 2z" fill="#5b5b5b"/><path d="M58 40c4 6 4 14 0 20" stroke="#15110e" stroke-width="5"/><circle cx="72" cy="44" r="2.5" fill="#e9dfcc"/><path d="M84 47l10 2-10 2z" fill="#2b2b2b"/></svg>
+      <div class="name">박새</div><div class="time">멈춘 시각 <b>11:11</b></div>
+    </div>
+    <div class="card">
+      <svg viewBox="0 0 120 90" aria-hidden="true"><path d="M16 58c16-6 24-22 42-22 12 0 18 4 22 10-8 1-12 4-16 10-8 9-30 9-48 2z" fill="#d3a92b"/><path d="M62 40l14 4" stroke="#15110e" stroke-width="3"/><circle cx="72" cy="44" r="2.5" fill="#15110e"/><path d="M84 47l12 2-12 3z" fill="#c0603a"/></svg>
+      <div class="name">꾀꼬리</div><div class="time">멈춘 시각 <b>07:30</b></div>
+    </div>
+  </section>
+
+  <p class="secret">손님께만 드리는 안내 — 7호실의 입장 암호는 「새벽 세 시에 멈춘 새의 이름」입니다.</p>
+  <p class="note">※ 손님께만 보이는 안내가 이 페이지 어딘가에 있습니다. 천천히 훑어보십시오.</p>
+
+  <footer>
+    여운장 옆 골목 · 간판 없음 · 예약은 받지 않습니다<br>
+    차는 늘 준비되어 있습니다.
+  </footer>
+</main>
+</body>
+</html>
